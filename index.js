@@ -8,8 +8,9 @@ const https = require('https');
 //const url = require('url');
 let StringDecoder = require('string_decoder').StringDecoder;
 let config = require('./config');
+let fs = require('fs');
 
-// Instantiating the HTTP server. The server should respond to all rquests with a string
+// Instantiating the HTTP server.
 let httpServer = http.createServer((req, res) => {
     unifiedServer(req, res);
 });
@@ -22,9 +23,10 @@ httpServer.listen(config.httpPort, () => {
 
 // Instantiate the HTTPS server
 let httpsOptions = {
-    'key': '',
-    'cert': ''
+    'key': fs.readFileSync('./https/key.key'),
+    'cert': fs.readFileSync('./https/cert.crt')
 };
+
 let httpsServer = https.createServer(httpsOptions, (req, res) => {
     unifiedServer(req, res);
 });

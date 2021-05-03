@@ -13,6 +13,6 @@ $SET NODE_ENV=env-name node index.js
 just as if we were on Linux/MacOs. This will not work
 on PowerSehll! only on a regular cmd terminal.
 
-Create a self-signed certificate on Windows (PowerShell)
----------------------------------------------------------
-PS C:\WINDOWS\system32> New-SelfSignedCertificate -DnsName localhost -CertStoreLocation cert:\LocalMachine\My
+Create a self-signed certificate on Linux
+------------------------------------------
+openssl req -x509 -nodes -days 3650 -newkey rsa:4096 -keyout key.key -out cert.crt

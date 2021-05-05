@@ -5,10 +5,13 @@
 // Dependencies
 const http = require('http');
 const https = require('https');
+const qs = require('querystring');
 //const url = require('url');
 let StringDecoder = require('string_decoder').StringDecoder;
 let config = require('./config');
 let fs = require('fs');
+let handlers = require('./lib/handlers');
+let helpers = require('./lib/helpers');
 
 // Instantiating the HTTP server.
 let httpServer = http.createServer((req, res) => {
@@ -48,7 +51,8 @@ let unifiedServer = (req, res) => {
     let searchParams = parsedUrl.searchParams;
 
     // Get the query string as an object
-    let queryString = parsedUrl.search;
+    let queryString = parsedUrl.search.split('?')[1];
+    let queryStringObject = qs.decode(queryString);
 
     // Get the HTTP Method
     let method = req.method.toLowerCase();
@@ -77,9 +81,11 @@ let unifiedServer = (req, res) => {
         let data = {
             'trimmedPath': trimmedPath,
             'queryString': queryString,
+            'searchParams': searchParams,
+            'queryStringObject': queryStringObject,
             'method': method,
             'headers': headers,
-            'payload': buffer
+            'payload': helpers.parseJsonToObject(buffer)
         };
 
         // Route the request to the handler specified in the router
@@ -107,18 +113,7 @@ let unifiedServer = (req, res) => {
     console.log(headers);
 };
 
-// Routing and handlers
-let handlers = {};
-
-// Ping handler
-handlers.ping = (data, callback) => {
-    callback(200);
-};
-
-handlers.notFound = (data, callback) => {
-    callback(404);
-};
-
 let router = {
-    'ping': handlers.ping
+    'ping': handlers.ping,
+    'users': handlers.users
 };
